@@ -29,19 +29,13 @@ public class GridTest {
     }
 
     private DesiredCapabilities setupCapabilitys(String browser){
-        switch(browser){
-            case "firefox":
-                return DesiredCapabilities.firefox();
-            case "chrome":
-                return DesiredCapabilities.chrome();
-
-            case "edge":
-                return DesiredCapabilities.edge();
-            case "opera":
-                return DesiredCapabilities.opera();
-            default:
-                throw new IllegalStateException("Unexpected value: " + browser);
-        }
+        return switch (browser) {
+            case "firefox" -> DesiredCapabilities.firefox();
+            case "chrome" -> DesiredCapabilities.chrome();
+            case "edge" -> DesiredCapabilities.edge();
+            case "opera" -> DesiredCapabilities.opera();
+            default -> throw new IllegalStateException("Unexpected value: " + browser);
+        };
     }
 
     @DisplayName("Google search.")
@@ -51,6 +45,8 @@ public class GridTest {
         DesiredCapabilities cap = setupCapabilitys(browser);
         cap.setPlatform(Platform.LINUX);
         driver = new RemoteWebDriver(url, cap);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().window().setSize(new Dimension(1900, 1000));
         driver.get("https://www.google.com");
         try {
             Thread.sleep(500);
@@ -70,17 +66,12 @@ public class GridTest {
         DesiredCapabilities cap = setupCapabilitys(browser);
         cap.setPlatform(Platform.LINUX);
         driver = new RemoteWebDriver(url, cap);
-
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         driver.manage().window().setSize(new Dimension(1900, 1000));
-
         driver.get("https://www.actitime.com/");
-        driver.findElement(By.linkText("Try Free")).click();
 
+        driver.findElement(By.linkText("Try Free")).click();
         // explicit wait - to wait for the compose button to be click-able
-        WebDriverWait wait = new WebDriverWait(driver,30);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("first-name")));
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -100,6 +91,9 @@ public class GridTest {
         DesiredCapabilities cap = setupCapabilitys(browser);
         cap.setPlatform(Platform.LINUX);
         driver = new RemoteWebDriver(url, cap);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.manage().window().setSize(new Dimension(1900, 1000));
+
 
         driver.get("https://Adlibris.Com/se/");
         driver.findElement(By.id("q")).sendKeys("praktisk mjukvarutestning");
